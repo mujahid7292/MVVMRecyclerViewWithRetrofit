@@ -1,12 +1,14 @@
 package com.sand_corporation.www.mvvmrecyclerviewwithretrofit.MainActivity.RVAdapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.sand_corporation.www.mvvmrecyclerviewwithretrofit.DetailActivity.DetailActivity;
 import com.sand_corporation.www.mvvmrecyclerviewwithretrofit.MainActivity.MainViewModel.MainViewModel;
 import com.sand_corporation.www.mvvmrecyclerviewwithretrofit.R;
 import com.sand_corporation.www.mvvmrecyclerviewwithretrofit.databinding.CategoryBinding;
@@ -31,9 +33,26 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder>{
             layoutInflater = LayoutInflater.from(parent.getContext());
         }
 
-        CategoryBinding categoryBinding = DataBindingUtil.inflate(
+        final CategoryBinding categoryBinding = DataBindingUtil.inflate(
                 layoutInflater,R.layout.single_category,parent,false);
         MyViewHolder holder = new MyViewHolder(categoryBinding);
+
+        categoryBinding.setRVPresenter(new RVPresenter() {
+            @Override
+            public void OnRvEvent() {
+                String categoryId = categoryBinding.getMainViewModel().category.getId();
+                String categoryTitle = categoryBinding.getMainViewModel().category.getTitle();
+                String categoryDescription = categoryBinding.getMainViewModel().category.getDescription();
+                String categoryImageUrl = categoryBinding.getMainViewModel().category.getImageUrl();
+
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra("categoryId",categoryId);
+                intent.putExtra("categoryTitle",categoryTitle);
+                intent.putExtra("categoryDescription",categoryDescription);
+                intent.putExtra("categoryImageUrl",categoryImageUrl);
+                context.startActivity(intent);
+            }
+        });
 
         return holder;
     }
